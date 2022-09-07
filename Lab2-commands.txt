@@ -22,3 +22,7 @@ kubectl rollout status deployment/tripviewer-deployment
 kubectl edit deployment/nginx-deployment
 
 kubectl describe deployments
+
+
+#Port forwarding
+kubectl port-forward poi-f6c56889d-x7smx 28000:80

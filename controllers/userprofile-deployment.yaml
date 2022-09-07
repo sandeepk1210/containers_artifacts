@@ -1,8 +1,28 @@
+apiVersion: v1 
+kind: Service 
+metadata:
+  name: userprofile 
+spec:
+  # When the node receives a request on the static port (30163)
+  # "select pods with the label 'app' set to 'echo-hostname'"
+  # and forward the request to one of them
+  selector:
+    app: userprofile 
+
+  ports:
+    # Three types of ports for a service
+    # nodePort - a static port assigned on each the node.  Access service via this external port number
+    # port - port exposed internally in the cluster
+    # targetPort - the container port to send requests to
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   #A Deployment named userprofile-deployment is created, indicated by the .metadata.name field.
-  name: userprofile-deployment
+  name: userprofile
 spec:
   replicas: 1
   #The .spec.selector field defines how the Deployment finds which Pods to manage. 
@@ -22,6 +42,19 @@ spec:
         #image: nginx:1.14.2
         ports:
         - containerPort: 80
+        env:
+          - name: PORT
+            value: "80"
+          - name: CONFIG_FILES_PATH
+            value: "/secrets"
+          - name: SQL_USER
+            value: "sqladminoFy4959"
+          - name: SQL_PASSWORD
+            value: "Passw0rd123"
+          - name: SQL_SERVER
+            value: "sqlserverofy4959.database.windows.net"
+          - name: SQL_DBNAME
+            value: "mydrivingDB"
         resources:
           requests:
             cpu: 250m
