@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  #A Deployment named trips-deployment is created, indicated by the .metadata.name field.
+  name: trips-deployment
+spec:
+  replicas: 1
+  #The .spec.selector field defines how the Deployment finds which Pods to manage. 
+  selector:
+    matchLabels:
+      app: trips
+  #The template field contains the following sub-fields:
+  #The Pods are labeled app: trips using the .metadata.labels field.
+  template:
+    metadata:
+      labels:
+        app: trips
+    spec:
+      containers:
+      - name: trips
+        image: registryofy4959.azurecr.io/tripinsights/trips:1.0
+        #image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 250m
+            memory: 64Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi

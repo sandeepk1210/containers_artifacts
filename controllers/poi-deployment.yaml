@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  #A Deployment named poi-deployment is created, indicated by the .metadata.name field.
+  name: poi-deployment
+spec:
+  replicas: 1
+  #The .spec.selector field defines how the Deployment finds which Pods to manage. 
+  selector:
+    matchLabels:
+      app: poi
+  #The template field contains the following sub-fields:
+  #The Pods are labeled app: poi using the .metadata.labels field.
+  template:
+    metadata:
+      labels:
+        app: poi
+    spec:
+      containers:
+      - name: poi
+        image: registryofy4959.azurecr.io/tripinsights/poi:1.0
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 250m
+            memory: 64Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi

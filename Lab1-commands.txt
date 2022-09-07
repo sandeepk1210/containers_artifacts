@@ -1,0 +1,58 @@
+#CREATE NETWRORK
+docker network create localnetwork
+
+#CREATE DATABASE
+#-e "ACCEPT_EULA=Y": Used for accepting End-User License Agreement terms
+#-p default port is 1433
+#--name: Specify a name for your docker image
+#--hostname: Assigning a hostname to your SQL Server
+
+docker run --network "localnetwork" -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=P@ssword@1234" \
+   -p 1433:1433 --name sql \
+   -d mcr.microsoft.com/mssql/server:2017-latest
+
+
+docker exec -t sql cat /var/opt/mssql/log/errorlog | grep connection
+
+
+ docker exec -it sql "bash"
+ /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P P@ssword@1234
+
+
+CREATE DATABASE mydrivingDB;
+GO
+
+SELECT Name from sys.databases;
+GO
+
+Use mydrivingDB
+
+#PERFORM DATALOAD
+docker run --network "localnetwork" \
+-e "SQLFQDN=sql" \
+-e "SQLUSER=SA" \
+-e "SQLPASS=P@ssword@1234" \
+-e "SQLDB=mydrivingDB" \
+registryofy4959.azurecr.io/dataload:1.0
+
+
+
+#RUN THE POI APPLICATION
+docker build -f ../../dockerfiles/Dockerfile_3 -t "tripinsights/poi:1.0" .
+
+docker run --network "localnetwork" \
+-e "SQL_USER=SA" \
+-e "SQL_PASSWORD=P@ssword@1234" \
+-e "SQL_SERVER=sql" \
+-e "SQL_DBNAME=mydrivingDB" \
+-e "ASPNETCORE_ENVIRONMENT=Local" \
+-p 80:80 \
+--name poi \
+tripinsights/poi:1.0
+
+#PUSH THE POI APPLICATION TO ACR
+az login
+az acr login --name registryofy4959
+
+docker tag tripinsights/poi:1.0 registryofy4959.azurecr.io/tripinsights/poi:1.0
+docker push registryofy4959.azurecr.io/tripinsights/poi:1.0

@@ -1,0 +1,24 @@
+##When you're using Azure Container Registry (ACR) with Azure Kubernetes Service (AKS), an authentication mechanism needs to be established.
+az aks create -g teamResources \
+-n tripAKSCluster \
+--node-count 3 \
+--enable-addons monitoring \
+--enable-msi-auth-for-monitoring \
+--generate-ssh-keys \
+ --attach-acr registryofy4959
+
+/subscriptions/55dfab7f-8fa4-4c60-ae19-deffaad0a2a7/resourceGroups/teamResources/providers/Microsoft.ContainerRegistry/registries/registryofy4959
+
+az aks get-credentials --resource-group teamResources --name tripAKSCluster
+
+SQL Server Password: Passw0rd123 Username : sqladminoFy4959
+
+#Commands
+kubetctl get nodes
+kubectl get pods
+kubetctl logs <pod-name>
+kubectl rollout status deployment/tripviewer-deployment
+
+kubectl edit deployment/nginx-deployment
+
+kubectl describe deployments
