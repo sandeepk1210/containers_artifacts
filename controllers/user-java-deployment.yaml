@@ -1,5 +1,5 @@
-apiVersion: v1 
-kind: Service 
+apiVersion: v1
+kind: Service
 metadata:
   name: user-java
 spec:
@@ -7,7 +7,7 @@ spec:
   # "select pods with the label 'app' set to 'echo-hostname'"
   # and forward the request to one of them
   selector:
-    app: user-java 
+    app: user-java
 
   ports:
     # Three types of ports for a service
@@ -25,7 +25,7 @@ metadata:
   name: user-java
 spec:
   replicas: 1
-  #The .spec.selector field defines how the Deployment finds which Pods to manage. 
+  #The .spec.selector field defines how the Deployment finds which Pods to manage.
   selector:
     matchLabels:
       app: user-java
@@ -37,26 +37,20 @@ spec:
         app: user-java
     spec:
       containers:
-      - name: user-java
-        image: registryofy4959.azurecr.io/tripinsights/user-java:1.0
-        #image: nginx:1.14.2
-        ports:
-        - containerPort: 80
-        env:
-          - name: PORT
-            value: "80"
-          - name: SQL_USER
-            value: "sqladminoFy4959"
-          - name: SQL_PASSWORD
-            value: "Passw0rd123"
-          - name: SQL_SERVER
-            value: "sqlserverofy4959.database.windows.net"
-          - name: SQL_DBNAME
-            value: "mydrivingDB"
-        resources:
-          requests:
-            cpu: 250m
-            memory: 64Mi
-          limits:
-            cpu: 500m
-            memory: 256Mi
+        - name: user-java
+          image: registryofy4959.azurecr.io/tripinsights/user-java:1.0
+          #image: nginx:1.14.2
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: trip-secrets
+            - configMapRef:
+                name: trip-configs
+          resources:
+            requests:
+              cpu: 250m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi

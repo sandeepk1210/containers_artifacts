@@ -14,7 +14,7 @@ az aks get-credentials --resource-group teamResources --name tripAKSCluster
 SQL Server Password: Passw0rd123 Username : sqladminoFy4959
 
 #Commands
-kubetctl get nodes
+kubectl get nodes
 kubectl get pods
 kubetctl logs <pod-name>
 kubectl rollout status deployment/tripviewer-deployment
@@ -26,3 +26,6 @@ kubectl describe deployments
 
 #Port forwarding
 kubectl port-forward poi-f6c56889d-x7smx 28000:80
+
+#Convert string to base64 as its needed by Secret object
+echo -n 'sqladminoFy4959' | base64
